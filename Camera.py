@@ -3,6 +3,7 @@ from datetime import *
 import time
 import logging
 import base64
+import sys
 
 
 log = logging.getLogger()
@@ -20,13 +21,18 @@ KEYSPACE = "sensordata"
 class Camera():
     def __init__(self):
 
-        self.camera_id = 'test_cam_1'
-        self.cassandra_cluster_ip = '10.12.7.5'
+        for eachArg in sys.argv:
+            print(eachArg)
+
+        self.camera_id = sys.argv[1]
+        self.cassandra_cluster_ip = sys.argv[2]
+        #print (self.cassandra_cluster_ip)
         self.cassandrasession = None
 
         self.connectCassandra()
 
 
+        start = time.time ()
 
     def cleanup(self):
 
@@ -42,19 +48,21 @@ class Camera():
                 print (e)
 
     def processVideoStream(self):
-        vidcap = cv2.VideoCapture ('video/video.mov')
+        vidcap = cv2.VideoCapture ('video/black.mp4')
         success, image = vidcap.read ()
         count = 0
         success = True
 
         day_date= date.today()
 
+        start = time.time ()
+
         while success:
-            cv2.imwrite ("imagesout/frame%d.jpg" % count, image)  # save frame as JPEG file
+            cv2.imwrite ("imagesout/frame%d.jpg" % count, image,[int(cv2.IMWRITE_JPEG_QUALITY), 5])  # save frame as JPEG file
             imageFileNameandPath =  ("imagesout/frame%d.jpg" % count)
             image_base64 = self.convertToBase64(imageFileNameandPath)
             success, image = vidcap.read ()
-            print ('Read a new frame: ', success)
+            #print ('Read a new frame: ', success)
 
             timestamp = str(int(time.time()))
             frame_id = timestamp+str(count)
@@ -62,6 +70,13 @@ class Camera():
             self.saveToCassandra (self.camera_id, frame_id, timestamp,day_date ,image_base64)
             count += 1
 
+
+        end = time.time ()
+
+        runtime_seconds = end - start
+
+        print ('Experiment Runtime (seconds): ' + str(int(runtime_seconds)))
+        print ('Images written per (second): ' + str(count/runtime_seconds))
 
     def connectCassandra(self):
         cluster = Cluster ([self.cassandra_cluster_ip], port=9042)
@@ -75,7 +90,8 @@ class Camera():
     def saveToCassandra(self, camera_id, frame_id, timestamp, daydate, datavalue):
 
         self.cassandrasession.execute ("INSERT INTO cameradata (camera_id, frame_id, timestamp,daydate,value) VALUES (%s,%s,%s,%s,%s);",(camera_id, frame_id, int((timestamp),), daydate,datavalue))
-        print('Saved frame' + frame_id)
+        print('Saved frame to DB: ' + frame_id)
+        time.sleep(1)
 
     def convertToBase64(self,fileNameandPath):
 
