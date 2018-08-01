@@ -1,5 +1,5 @@
-#to build on docker host first: docker build --no-cache=true -f Dockerfile https://github.com/brianr82/sensorsim.git -t brianr82/sensorsim:latest
-#usage example: docker run -it -e PI_IP='10.12.7.45' -e PI_PORT='1880' -e NUM_MSG='100' -e SENSOR_ID='simsensor001' singlesensorsim
+#to build on docker host first: docker build --no-cache=true -f Dockerfile https://github.com/brianr82/Emulated-Camera.git -t brianr82/Emulated-Camera:latest
+#usage example: docker run -it -e camera_id='IoT_Camera_01' -e cassandra_ip='10.12.7.5' img_quality='5' transmit_delay ='1'--name emucamera01 emucamera
 FROM python:3.6-slim
 RUN mkdir app
 WORKDIR app
