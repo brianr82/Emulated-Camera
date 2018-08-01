@@ -8,22 +8,6 @@ RUN apt-get update && apt-get install -y build-essential \
     cmake \
     wget \
     git \
-    unzip \
-    yasm \
-    pkg-config \
-    libjpeg-dev \
-    libtiff-dev \
-    libjasper-dev \
-    libpng-dev \
-    libavcodec-dev \
-    libavformat-dev \
-    libswscale-dev \
-    libv4l-dev \
-    libatlas-base-dev \
-    gfortran \
-    libtbb2 \
-    libtbb-dev \
-    libpq-dev \
     && apt-get -y clean all \
     && rm -rf /var/lib/apt/lists/*
 
