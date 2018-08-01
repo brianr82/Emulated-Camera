@@ -21,10 +21,10 @@ KEYSPACE = "sensordata"
 class Camera():
     def __init__(self):
 
-        self.camera_id = sys.argv[2]
-        self.cassandra_cluster_ip = sys.argv[3]
-        self.JPGQuality = int(sys.argv[4])
-        self.transmitdelay = float(sys.argv[5])
+        self.camera_id = sys.argv[1]
+        self.cassandra_cluster_ip = sys.argv[2]
+        self.JPGQuality = int(sys.argv[3])
+        self.transmitdelay = float(sys.argv[4])
         self.cassandrasession = None
 
 
