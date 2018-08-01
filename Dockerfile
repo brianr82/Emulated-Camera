@@ -15,6 +15,6 @@ RUN apt-get update && apt-get install -y build-essential \
 RUN pip install opencv-contrib-python-headless
 RUN pip install cassandra-driver
 
-
-CMD ["python3", "main.py","IoT_Camera_01", "10.12.7.5", "5", "1"]
+ENTRYPOINT ["python3", "main.py"]
+CMD ["IoT_Camera_01", "10.12.7.5", "5", "1"]
 
