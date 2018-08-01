@@ -26,7 +26,8 @@ class Camera():
 
         self.camera_id = sys.argv[1]
         self.cassandra_cluster_ip = sys.argv[2]
-        #print (self.cassandra_cluster_ip)
+        self.JPGQuality =  int(sys.argv[3])
+        self.transmitdelay = float(sys.argv[4])
         self.cassandrasession = None
 
         self.connectCassandra()
@@ -58,7 +59,7 @@ class Camera():
         start = time.time ()
 
         while success:
-            cv2.imwrite ("imagesout/frame%d.jpg" % count, image,[int(cv2.IMWRITE_JPEG_QUALITY), 5])  # save frame as JPEG file
+            cv2.imwrite ("imagesout/frame%d.jpg" % count, image,[int(cv2.IMWRITE_JPEG_QUALITY), self.JPGQuality])  # save frame as JPEG file
             imageFileNameandPath =  ("imagesout/frame%d.jpg" % count)
             image_base64 = self.convertToBase64(imageFileNameandPath)
             success, image = vidcap.read ()
@@ -91,7 +92,7 @@ class Camera():
 
         self.cassandrasession.execute ("INSERT INTO cameradata (camera_id, frame_id, timestamp,daydate,value) VALUES (%s,%s,%s,%s,%s);",(camera_id, frame_id, int((timestamp),), daydate,datavalue))
         print('Saved frame to DB: ' + frame_id)
-        time.sleep(1)
+        time.sleep(self.transmitdelay)
 
     def convertToBase64(self,fileNameandPath):
 
