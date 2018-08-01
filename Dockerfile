@@ -16,5 +16,5 @@ RUN pip install opencv-contrib-python-headless
 RUN pip install cassandra-driver
 
 
-ENTRYPOINT ["python3", "main.py","IoT_Camera_01", "10.12.7.5", "5", "1"]
+CMD ["python3", "main.py","IoT_Camera_01", "10.12.7.5", "5", "1"]
 
