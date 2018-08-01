@@ -15,4 +15,6 @@ RUN apt-get update && apt-get install -y build-essential \
 RUN pip install opencv-contrib-python-headless
 RUN pip install cassandra-driver
 
-CMD python ./main.py $camera_id $cassandra_ip $img_quality $transmit_delay
+
+ENTRYPOINT ["python3", "main.py"]
+
