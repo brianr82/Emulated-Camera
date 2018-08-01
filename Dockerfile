@@ -4,6 +4,7 @@ FROM python:3.6-slim
 RUN mkdir app
 WORKDIR app
 COPY / /app
+COPY /video /app
 RUN mkdir imagesout
 
 RUN apt-get update && apt-get install -y build-essential \

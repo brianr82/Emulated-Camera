@@ -4,6 +4,7 @@ import time
 import logging
 import base64
 import sys
+import os, shutil
 
 
 log = logging.getLogger()
@@ -34,7 +35,7 @@ class Camera():
 
     def cleanup(self):
 
-        import os, shutil
+
         folder = 'imagesout'
         for the_file in os.listdir (folder):
             file_path = os.path.join (folder, the_file)
