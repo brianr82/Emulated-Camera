@@ -47,7 +47,7 @@ class Camera():
                 print (e)
 
     def processVideoStream(self):
-        vidcap = cv2.VideoCapture ('video/black.mp4')
+        vidcap = cv2.VideoCapture ('black.mp4')
         success, image = vidcap.read ()
         count = 0
         success = True
