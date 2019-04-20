@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y build-essential \
 
 RUN pip install opencv-contrib-python-headless
 RUN pip install cassandra-driver
+RUN pip install confluent-kafka
 
 
 #ENV camera_id = 'IOT_camera_x'

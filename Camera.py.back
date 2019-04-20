@@ -5,8 +5,6 @@ import logging
 import base64
 import sys
 import os, shutil
-import CassandraClient
-from KafkaClient import *
 
 
 log = logging.getLogger()
@@ -15,48 +13,30 @@ handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
 log.addHandler(handler)
 
+from cassandra import ConsistencyLevel
+from cassandra.cluster import Cluster
+from cassandra.query import SimpleStatement
 
-
+KEYSPACE = "sensordata"
 
 class Camera():
     def __init__(self):
 
-
         self.camera_id = sys.argv[1]
-        self.destination_cluster_ip = sys.argv[2]
+        self.cassandra_cluster_ip = sys.argv[2]
         self.JPGQuality = int(sys.argv[3])
         self.transmitdelay = float(sys.argv[4])
-        start = time.time()
+        self.cassandrasession = None
 
 
 
-        '''uncomment this section for debugging locally'''
-
-        '''
-        self.camera_id = "0001"
-        self.destination_cluster_ip = "192.168.0.3"
-        self.JPGQuality = 5
-        self.transmitdelay = 1.0
+        self.connectCassandra()
         start = time.time ()
-        '''
-
-
-
-        #to use cassandra as a sink
-        #self.cassandraclient = CassandraClient(self.destination_cluster_ip)
-        #self.cassandraclient.connectCassandra()
-
-
-        #to use kafka as a sink
-        self.kafkaclient = KafkaClient(self.destination_cluster_ip)
-        self.kafkaclient.connectKafka()
-
-
 
     def cleanup(self):
 
 
-        folder = 'app'
+        folder = 'imagesout'
         for the_file in os.listdir (folder):
             file_path = os.path.join (folder, the_file)
             try:
@@ -77,8 +57,8 @@ class Camera():
         start = time.time ()
 
         while success:
-            cv2.imwrite ("app/frame%d.jpg" % count, image,[int(cv2.IMWRITE_JPEG_QUALITY), self.JPGQuality])  # save frame as JPEG file
-            imageFileNameandPath =  ("app/frame%d.jpg" % count)
+            cv2.imwrite ("imagesout/frame%d.jpg" % count, image,[int(cv2.IMWRITE_JPEG_QUALITY), self.JPGQuality])  # save frame as JPEG file
+            imageFileNameandPath =  ("imagesout/frame%d.jpg" % count)
             image_base64 = self.convertToBase64(imageFileNameandPath)
             success, image = vidcap.read ()
             #print ('Read a new frame: ', success)
@@ -86,9 +66,7 @@ class Camera():
             timestamp = str(int(time.time()))
             frame_id = timestamp+str(count)
 
-            #self.cassandraclient.saveToCassandra(self.camera_id, frame_id, timestamp,day_date ,image_base64)
-            self.kafkaclient.saveToKafka(self.camera_id, frame_id, timestamp, day_date, image_base64)
-
+            self.saveToCassandra (self.camera_id, frame_id, timestamp,day_date ,image_base64)
             count += 1
 
 
@@ -99,6 +77,20 @@ class Camera():
         print ('Experiment Runtime (seconds): ' + str(int(runtime_seconds)))
         print ('Images written per (second): ' + str(count/runtime_seconds))
 
+    def connectCassandra(self):
+        cluster = Cluster ([self.cassandra_cluster_ip], port=9042)
+        self.cassandrasession = cluster.connect ()
+
+        log.info ("setting keyspace...")
+        self.cassandrasession.set_keyspace (KEYSPACE)
+
+
+
+    def saveToCassandra(self, camera_id, frame_id, timestamp, daydate, datavalue):
+
+        self.cassandrasession.execute ("INSERT INTO cameradata (camera_id, frame_id, timestamp,daydate,value) VALUES (%s,%s,%s,%s,%s);",(camera_id, frame_id, int((timestamp),), daydate,datavalue))
+        print('Saved frame to DB: ' + frame_id)
+        time.sleep(self.transmitdelay)
 
     def convertToBase64(self,fileNameandPath):
 
