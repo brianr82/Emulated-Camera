@@ -5,6 +5,7 @@ RUN mkdir app
 WORKDIR app
 COPY / /app
 RUN mkdir imagesout
+WORKDIR /
 
 RUN apt-get update && apt-get install -y build-essential \
     cmake \

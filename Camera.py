@@ -19,8 +19,9 @@ log.addHandler(handler)
 
 
 class Camera():
-    def __init__(self):
+    def __init__(self,camera_id,destination_cluster_ip,JPGQuality,transmitdelay):
 
+        '''
 
         self.camera_id = sys.argv[1]
         self.destination_cluster_ip = sys.argv[2]
@@ -28,7 +29,13 @@ class Camera():
         self.transmitdelay = float(sys.argv[4])
         start = time.time()
 
+        '''
 
+        self.camera_id = camera_id
+        self.destination_cluster_ip = destination_cluster_ip
+        self.JPGQuality = JPGQuality
+        self.transmitdelay = transmitdelay
+        start = time.time()
 
         '''uncomment this section for debugging locally'''
 
