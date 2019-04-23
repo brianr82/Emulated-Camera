@@ -74,7 +74,7 @@ class Camera():
                 print (e)
 
     def processVideoStream(self):
-        vidcap = cv2.VideoCapture ('black.mp4')
+        vidcap = cv2.VideoCapture('black.mp4')
         success, image = vidcap.read ()
         count = 0
         success = True
@@ -85,7 +85,7 @@ class Camera():
 
         while success:
             cv2.imwrite ("imagesout/frame%d.jpg" % count, image,[int(cv2.IMWRITE_JPEG_QUALITY), self.JPGQuality])  # save frame as JPEG file
-            imageFileNameandPath =  ("app/frame%d.jpg" % count)
+            imageFileNameandPath =  ("imagesout/frame%d.jpg" % count)
             image_base64 = self.convertToBase64(imageFileNameandPath)
             success, image = vidcap.read ()
             #print ('Read a new frame: ', success)
@@ -111,8 +111,8 @@ class Camera():
 
     def convertToBase64(self,fileNameandPath):
 
-        with open (fileNameandPath, "rb") as imageFile:
-            str = base64.b64encode (imageFile.read ())
+        with open(fileNameandPath, "rb") as imageFile:
+            str = base64.b64encode(imageFile.read())
         return str
 
 
