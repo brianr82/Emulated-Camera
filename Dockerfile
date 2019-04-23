@@ -5,7 +5,7 @@ RUN mkdir app
 WORKDIR app
 COPY / /app
 RUN mkdir imagesout
-WORKDIR /
+
 
 RUN apt-get update && apt-get install -y build-essential \
     cmake \
@@ -23,9 +23,5 @@ RUN pip install confluent-kafka
 #ENV camera_id = 'IOT_camera_x'
 
 
-ENTRYPOINT ["python3", "main.py"]
-
-#CMD ['$camera_id', "10.12.7.5", "5", "1"]
-
-#CMD python3 main.py
+ENTRYPOINT ["python3", "/app/main.py"]
 

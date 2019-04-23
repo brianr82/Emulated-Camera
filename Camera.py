@@ -106,6 +106,8 @@ class Camera():
         print ('Experiment Runtime (seconds): ' + str(int(runtime_seconds)))
         print ('Images written per (second): ' + str(count/runtime_seconds))
 
+        self.cleanup()
+
 
     def convertToBase64(self,fileNameandPath):
 
