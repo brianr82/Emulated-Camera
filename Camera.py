@@ -63,7 +63,7 @@ class Camera():
     def cleanup(self):
 
 
-        folder = 'app'
+        folder = 'imagesout'
         for the_file in os.listdir (folder):
             file_path = os.path.join (folder, the_file)
             try:
@@ -84,7 +84,7 @@ class Camera():
         start = time.time ()
 
         while success:
-            cv2.imwrite ("app/frame%d.jpg" % count, image,[int(cv2.IMWRITE_JPEG_QUALITY), self.JPGQuality])  # save frame as JPEG file
+            cv2.imwrite ("imagesout/frame%d.jpg" % count, image,[int(cv2.IMWRITE_JPEG_QUALITY), self.JPGQuality])  # save frame as JPEG file
             imageFileNameandPath =  ("app/frame%d.jpg" % count)
             image_base64 = self.convertToBase64(imageFileNameandPath)
             success, image = vidcap.read ()
